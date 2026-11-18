@@ -2,41 +2,55 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>PokeSurvivor Gacha Pro</title>
+    <title>PokeSurvivor Gacha V4</title>
     <style>
-        body { background: #0f172a; color: white; font-family: sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-        .top { display: flex; gap: 12px; flex-wrap: wrap; background: #1e293b; padding: 8px 16px; border-radius: 10px; margin-bottom: 10px; font-size: 13px; border: 1px solid #334155; }
+        body { background: #090d16; color: white; font-family: sans-serif; margin: 0; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+        .top { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; background: #1e293b; padding: 8px 14px; border-radius: 10px; margin-bottom: 10px; font-size: 13px; border: 1px solid #334155; }
         .wrap { display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; }
-        .box { background: #1e293b; padding: 12px; border-radius: 10px; width: 290px; }
+        .box { background: #1e293b; padding: 12px; border-radius: 10px; width: 310px; }
         canvas { background: radial-gradient(circle, #065f46, #022c22); border: 3px solid #10b981; border-radius: 10px; display: block; }
-        button { padding: 8px 12px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; margin: 3px 0; }
-        .btn-y { background: #f59e0b; color: black; width: 100%; }
-        .btn-g { background: #10b981; color: white; width: 100%; }
-        .btn-r { background: #475569; color: white; width: 100%; font-size: 12px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 0; max-height: 190px; overflow-y: auto; }
-        .card { background: #0f172a; padding: 6px; border-radius: 6px; border: 2px solid #475569; cursor: pointer; font-size: 12px; }
+        button { padding: 7px 10px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; margin: 3px 0; font-size: 12px; }
+        .row-btn { display: flex; gap: 5px; }
+        .btn-y1 { background: #e2e8f0; color: black; flex: 1; }
+        .btn-y10 { background: linear-gradient(45deg, #f59e0b, #fbbf24); color: black; flex: 1.2; }
+        .btn-w { background: #38bdf8; color: black; width: 100%; }
+        .btn-g { background: #10b981; color: white; width: 100%; font-size: 14px; padding: 9px; }
+        .btn-r { background: #475569; color: white; width: 100%; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 8px 0; max-height: 165px; overflow-y: auto; }
+        .card { background: #0f172a; padding: 6px; border-radius: 6px; border: 2px solid #475569; cursor: pointer; font-size: 11px; }
         .card.sel { border-color: #10b981; background: #064e3b; }
         .s5 { border-color: #fbbf24; color: #fde68a; } .s4 { border-color: #c084fc; color: #e9d5ff; } .s3 { border-color: #38bdf8; color: #bae6fd; }
-        #modal { display: none; position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); background: #1e293b; border: 3px solid #fbbf24; padding: 15px; border-radius: 10px; text-align: center; z-index: 99; }
+        .wp-bar { background: #0f172a; padding: 6px 8px; border-radius: 6px; font-size: 11px; margin-bottom: 6px; border: 1px solid #334155; }
+        #modal { display: none; position: fixed; top: 40%; left: 50%; transform: translate(-50%, -50%); background: #1e293b; border: 3px solid #fbbf24; padding: 15px; border-radius: 10px; text-align: center; z-index: 99; box-shadow: 0 0 30px black; max-width: 340px; }
     </style>
 </head>
 <body>
     <div class="top">
         <div>⏱️ <strong id="tTxt">00:00</strong></div>
-        <div>🏆 Kỷ lục: <strong id="bTxt" style="color:#fbbf24">00:00</strong></div>
-        <div>👑 Diệt Boss: <strong id="kTxt">0</strong></div>
-        <div>🪙 <strong id="cTxt">300</strong></div>
+        <div>🏆 <strong id="bTxt" style="color:#fbbf24">00:00</strong></div>
+        <div>👑 <strong id="kTxt">0</strong></div>
+        <div>🪙 <strong id="cTxt">1000</strong></div>
         <div>❤️ <strong id="hTxt">100</strong></div>
         <div>⭐ Lv.<strong id="lTxt">1</strong> (<span id="eTxt">0/10</span>)</div>
         <div>⚡ Space: <strong id="skTxt">OK</strong></div>
+        <button id="bPause" onclick="togglePause()" style="padding:3px 8px; margin:0; background:#334155; color:white;">⏸️ Dừng</button>
     </div>
     <div class="wrap">
         <div class="box">
-            <button class="btn-y" id="bGacha">🎰 Quay Gacha (100 Xu)</button>
-            <div id="msg" style="font-size:12px; color:#fbbf24; min-height:18px; margin-top:4px;"></div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:#94a3b8; margin-bottom:4px;">
+                <span>Bảo hiểm 5★: <strong id="pityTxt" style="color:#fbbf24">0</strong>/20</span>
+                <span onclick="freeCoins()" style="color:#4ade80; cursor:pointer; text-decoration:underline;">🎁 +500 Xu</span>
+            </div>
+            <div class="row-btn">
+                <button class="btn-y1" onclick="doPull(1, 100)">Quay x1 (100)</button>
+                <button class="btn-y10" onclick="doPull(10, 900)">🎰 Quay x10 (900)</button>
+            </div>
+            <button class="btn-w" onclick="pullWeapon()">🗡️ Quay Vũ Khí Trang Bị (150 Xu)</button>
+            <div id="msg" style="font-size:11px; color:#fbbf24; min-height:22px; margin-top:4px;"></div>
+            <div class="wp-bar" id="wpTxt">Trang bị: Chưa có vũ khí</div>
             <div class="grid" id="list"></div>
-            <button class="btn-g" id="bStart">⚔️ Bắt Đầu / Chơi Lại</button>
-            <button class="btn-r" id="bReset">🗑️ Xóa dữ liệu lưu</button>
+            <button class="btn-g" onclick="startGame()">⚔️ Bắt Đầu / Chơi Lại</button>
+            <button class="btn-r" onclick="resetAll()">🗑️ Xóa dữ liệu lưu</button>
         </div>
         <canvas id="cv" width="480" height="420" tabindex="0"></canvas>
     </div>
@@ -45,98 +59,192 @@
         <button onclick="up('dmg')" style="background:#ef4444;color:white">🔥 +30% Công</button>
         <button onclick="up('spd')" style="background:#38bdf8">⚡ +25% Tốc bắn</button>
         <button onclick="up('orb')" style="background:#f97316;color:white">☄️ +1 Cầu lửa</button>
+        <button onclick="up('zap')" style="background:#eab308;color:black">🌩️ +1 Tia sét lan</button>
+        <button onclick="up('ice')" style="background:#06b6d4;color:white">❄️ +Vùng băng</button>
+        <button onclick="up('crit')" style="background:#ec4899;color:white">💥 +15% Chí mạng</button>
         <button onclick="up('hp')" style="background:#10b981;color:white">💚 Hồi 40 Máu</button>
     </div>
     <script>
         const pool = [
-            { id: "p1", name: "Chuột Sấm", icon: "🐭", star: 4, col: "#facc15", dmg: 20, rate: 450 },
-            { id: "p2", name: "Rồng Lửa", icon: "🐉", star: 4, col: "#f97316", dmg: 28, rate: 550 },
-            { id: "p3", name: "Rùa Nước", icon: "🐢", star: 3, col: "#38bdf8", dmg: 15, rate: 400 },
-            { id: "p4", name: "Ếch Cỏ", icon: "🐸", star: 3, col: "#4ade80", dmg: 14, rate: 380 },
-            { id: "p5", name: "Mèo Thần", icon: "🐱", star: 5, col: "#e879f9", dmg: 45, rate: 300 }
+            { id: "p1", name: "Chuột Sấm", evoName: "Thần Sấm", icon: "🐭", evoIcon: "⚡", star: 4, col: "#facc15", dmg: 20, rate: 450, spd: 3.6 },
+            { id: "p2", name: "Rồng Lửa", evoName: "Hỏa Long Vương", icon: "🐉", evoIcon: "🔥", star: 4, col: "#f97316", dmg: 28, rate: 550, spd: 3.5 },
+            { id: "p3", name: "Rùa Nước", evoName: "Thủy Thần", icon: "🐢", evoIcon: "🌊", star: 3, col: "#38bdf8", dmg: 15, rate: 400, spd: 3.3 },
+            { id: "p4", name: "Ếch Cỏ", evoName: "Rừng Cổ Đại", icon: "🐸", evoIcon: "🌿", star: 3, col: "#4ade80", dmg: 14, rate: 380, spd: 3.5 },
+            { id: "p5", name: "Mèo Thần", evoName: "Tối Thượng", icon: "🐱", evoIcon: "👑", star: 5, col: "#e879f9", dmg: 45, rate: 300, spd: 4.0 },
+            { id: "p6", name: "Kỳ Lân", evoName: "Thánh Thú", icon: "🦄", evoIcon: "🌟", star: 5, col: "#38bdf8", dmg: 40, rate: 320, spd: 4.2 },
+            { id: "p7", name: "Cửu Vĩ", evoName: "Hồ Ly Tiên", icon: "🦊", evoIcon: "💠", star: 5, col: "#fb7185", dmg: 38, rate: 260, spd: 4.5 }
         ];
-        let coins = 300, inv = [ Object.assign({}, pool[0], { cnt: 1 }) ], sel = inv[0], bestSec = 0, bossKills = 0;
+
+        const wpPool = [
+            { id: "w1", name: "🗡️ Kiếm Lửa", bonusDmg: 12, bonusCrit: 0.05, regen: 0 },
+            { id: "w2", name: "🏹 Cung Băng", bonusDmg: 8, bonusCrit: 0.15, regen: 0 },
+            { id: "w3", name: "🔱 Trượng Sét", bonusDmg: 18, bonusCrit: 0.08, regen: 0 },
+            { id: "w4", name: "🛡️ Khiên Thánh", bonusDmg: 5, bonusCrit: 0.05, regen: 1.5 }
+        ];
+
+        const starterPet = Object.assign({}, pool[0], { cnt: 1 });
+        let coins = 1000, pity = 0, inv = [starterPet], sel = starterPet, bestSec = 0, bossKills = 0;
+        let eqWp = null, wpLv = 0;
 
         function fmt(s) { return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`; }
-        function save() { try { localStorage.setItem("pkPro", JSON.stringify({ coins, inv, sid: sel.id, bestSec, bossKills })); } catch(e){} }
+        function save() { try { localStorage.setItem("pkV4", JSON.stringify({ coins, pity, inv, sid: sel.id, bestSec, bossKills, eqWp, wpLv })); } catch(e){} }
         function load() {
             try {
-                let d = JSON.parse(localStorage.getItem("pkPro"));
-                if (d && d.inv && d.inv.length) {
-                    coins = d.coins; inv = d.inv; bestSec = d.bestSec || 0; bossKills = d.bossKills || 0;
+                let d = JSON.parse(localStorage.getItem("pkV4"));
+                if (d && Array.isArray(d.inv) && d.inv.length > 0 && d.inv[0] && d.inv[0].id) {
+                    coins = d.coins; pity = d.pity || 0; inv = d.inv; bestSec = d.bestSec || 0; bossKills = d.bossKills || 0;
+                    eqWp = d.eqWp || null; wpLv = d.wpLv || 0;
                     sel = inv.find(x => x.id === d.sid) || inv[0];
                 }
             } catch(e){}
         }
+
+        function freeCoins() {
+            coins += 500;
+            document.getElementById("msg").innerText = "🎁 Đã nhận quà hỗ trợ +500 Xu!";
+            drawInv(); setTimeout(save, 0);
+        }
+
+        function getPetStat(pet) {
+            let evo = pet.cnt >= 3;
+            let wpDmg = eqWp ? eqWp.bonusDmg * wpLv : 0;
+            return {
+                name: evo ? pet.evoName : pet.name,
+                icon: evo ? pet.evoIcon : pet.icon,
+                dmg: (pet.dmg + (pet.cnt - 1) * 6) * (evo ? 1.3 : 1) + wpDmg,
+                rate: Math.max(140, Math.round(pet.rate * (evo ? 0.85 : 1))),
+                spd: (pet.spd || 3.6) + (evo ? 0.4 : 0),
+                evo: evo
+            };
+        }
+
         function drawInv() {
-            let el = document.getElementById("list"); el.innerHTML = "";
+            let el = document.getElementById("list"), frag = document.createDocumentFragment();
             inv.forEach(p => {
-                let d = document.createElement("div");
+                let st = getPetStat(p), d = document.createElement("div");
                 d.className = `card s${p.star} ${sel.id === p.id ? 'sel' : ''}`;
-                d.innerHTML = `${p.icon} <b>${p.name}</b><br>${"★".repeat(p.star)} +${p.cnt-1}<br>ST: ${p.dmg+(p.cnt-1)*5}`;
+                d.innerHTML = `${st.icon} <b>${st.name}</b> ${st.evo ? '✨' : ''}<br>${"★".repeat(p.star)} +${p.cnt-1} | ST: ${Math.round(st.dmg)}`;
                 d.onclick = () => { sel = p; save(); drawInv(); };
-                el.appendChild(d);
+                frag.appendChild(d);
             });
+            el.innerHTML = ""; el.appendChild(frag);
             document.getElementById("cTxt").innerText = coins;
+            document.getElementById("pityTxt").innerText = pity;
             document.getElementById("bTxt").innerText = fmt(bestSec);
             document.getElementById("kTxt").innerText = bossKills;
+            document.getElementById("wpTxt").innerText = eqWp
+                ? `Trang bị: ${eqWp.name} (Lv.${wpLv}) | +${eqWp.bonusDmg*wpLv} ST`
+                : "Trang bị: Chưa có vũ khí";
         }
-        document.getElementById("bGacha").onclick = () => {
-            if (coins < 100) return document.getElementById("msg").innerText = "❌ Thiếu Xu!";
-            coins -= 100;
-            let r = Math.random() * 100, f = pool.filter(p => p.star === (r < 10 ? 5 : r < 45 ? 4 : 3));
-            let got = f[Math.floor(Math.random() * f.length)], ex = inv.find(p => p.id === got.id);
-            if (ex) { ex.cnt++; document.getElementById("msg").innerText = `🎉 Trùng ${got.icon} ${got.name} (+${ex.cnt-1})`; }
-            else { inv.push(Object.assign({}, got, { cnt: 1 })); document.getElementById("msg").innerText = `🎉 Nhận ${got.icon} ${got.name} (${got.star}★)`; }
-            save(); drawInv();
-        };
-        document.getElementById("bReset").onclick = () => { localStorage.removeItem("pkPro"); location.reload(); };
 
+        function pullWeapon() {
+            if (coins < 150) return document.getElementById("msg").innerText = "❌ Cần 150 Xu để quay Vũ Khí!";
+            coins -= 150;
+            let w = wpPool[Math.floor(Math.random() * wpPool.length)];
+            if (eqWp && eqWp.id === w.id) { wpLv++; document.getElementById("msg").innerText = `⚒️ Cường hóa ${w.name} lên Lv.${wpLv}!`; }
+            else { eqWp = w; wpLv = 1; document.getElementById("msg").innerText = `🗡️ Trang bị mới: ${w.name} (Lv.1)!`; }
+            drawInv(); setTimeout(save, 0);
+        }
+
+        function doPull(times, cost) {
+            if (coins < cost) return document.getElementById("msg").innerText = "❌ Không đủ Xu! Diệt quái để kiếm thêm.";
+            coins -= cost; let got5 = false, lastGot = null;
+            for (let i = 0; i < times; i++) {
+                pity++; let r = Math.random() * 100, star = (pity >= 20 || r < 8) ? 5 : (r < 42 ? 4 : 3);
+                if (star === 5) { pity = 0; got5 = true; }
+                let f = pool.filter(p => p.star === star), got = f[Math.floor(Math.random() * f.length)];
+                let ex = inv.find(p => p.id === got.id);
+                if (ex) ex.cnt++; else inv.push(Object.assign({}, got, { cnt: 1 }));
+                lastGot = got;
+            }
+            document.getElementById("msg").innerText = times === 10
+                ? (got5 ? "🌟 NỔ VÀNG 5★ TRONG GÓI X10!" : `🎉 Quay x10 xong! Nhận ${lastGot.icon} ${lastGot.name}...`)
+                : `🎉 Nhận ${lastGot.icon} ${lastGot.name} (${lastGot.star}★)!`;
+            drawInv(); setTimeout(save, 0);
+        }
+
+        function resetAll() {
+            try { localStorage.removeItem("pkV4"); } catch(e){}
+            coins = 1000; pity = 0; bestSec = 0; bossKills = 0; eqWp = null; wpLv = 0;
+            const fresh = Object.assign({}, pool[0], { cnt: 1 });
+            inv = [fresh]; sel = fresh;
+            document.getElementById("msg").innerText = "Đã đặt lại dữ liệu!";
+            drawInv();
+        }
         const cv = document.getElementById("cv"), ctx = cv.getContext("2d");
-        let run = false, pause = false, keys = {}, bullets = [], eBullets = [], ens = [], gems = [], boss = null;
-        let p = { x: 240, y: 210, r: 16, hp: 100, mhp: 100, spd: 3.5, lv: 1, exp: 0, nexp: 10, dmg: 20, rate: 450, col: "#10b981", icon: "🐭" };
-        let lShot = 0, lSpw = 0, sec = 0, lSec = 0, nBoss = 30, orb = 0, orbA = 0, novaOk = true, lNova = 0, lBossShot = 0;
+        let run = false, pause = false, userPause = false, keys = {};
+        let bullets = [], eBullets = [], ens = [], gems = [], items = [], dmgTexts = [], zaps = [], boss = null;
+        let p = { x: 240, y: 210, r: 16, hp: 100, mhp: 100, spd: 3.6, lv: 1, exp: 0, nexp: 10, dmg: 20, rate: 450, crit: 0.1, regen: 0, col: "#10b981", icon: "🐭" };
+        let lShot = 0, lSpw = 0, lZap = 0, sec = 0, lSec = 0, nBoss = 30, orb = 0, orbA = 0, zapLv = 0, iceLv = 0, novaOk = true, lNova = 0, lBossShot = 0, magnetTime = 0;
 
         window.onkeydown = e => {
             keys[e.code] = true;
-            if (e.code === "Space" && run && !pause && novaOk) {
+            if (e.code === "Space" && run && !pause && !userPause && novaOk) {
                 e.preventDefault(); novaOk = false; lNova = performance.now(); eBullets = [];
-                ens.forEach(en => { if (Math.hypot(p.x - en.x, p.y - en.y) < 160) { en.hp -= p.dmg * 2.5; let a = Math.atan2(en.y - p.y, en.x - p.x); en.x += Math.cos(a)*45; en.y += Math.sin(a)*45; } });
-                if (boss && Math.hypot(p.x - boss.x, p.y - boss.y) < 160 + boss.r) boss.hp -= p.dmg * 2.5;
+                ens.forEach(en => { if (Math.hypot(p.x - en.x, p.y - en.y) < 165) { hitEnemy(en, p.dmg * 2.5); let a = Math.atan2(en.y - p.y, en.x - p.x); en.x += Math.cos(a)*45; en.y += Math.sin(a)*45; } });
+                if (boss && Math.hypot(p.x - boss.x, p.y - boss.y) < 165 + boss.r) hitBoss(p.dmg * 2.5);
             }
         };
         window.onkeyup = e => keys[e.code] = false;
-        document.getElementById("bStart").onclick = () => {
-            p = { x: 240, y: 210, r: 16, hp: 100, mhp: 100, spd: 3.5, lv: 1, exp: 0, nexp: 10, dmg: sel.dmg + (sel.cnt-1)*5, rate: sel.rate, col: sel.col, icon: sel.icon };
-            bullets = []; eBullets = []; ens = []; gems = []; boss = null; sec = 0; nBoss = 30; orb = 0; novaOk = true;
-            run = true; pause = false; document.getElementById("modal").style.display = "none"; cv.focus(); ui();
-        };
+
+        function togglePause() {
+            if (!run || pause) return;
+            userPause = !userPause;
+            document.getElementById("bPause").innerText = userPause ? "▶️ Tiếp tục" : "⏸️ Dừng";
+        }
+
+        function startGame() {
+            let st = getPetStat(sel);
+            let wpCrit = eqWp ? eqWp.bonusCrit * wpLv : 0;
+            let wpRegen = eqWp ? eqWp.regen * wpLv : 0;
+            p = { x: 240, y: 210, r: 16, hp: 100, mhp: 100, spd: st.spd, lv: 1, exp: 0, nexp: 10, dmg: Math.round(st.dmg), rate: st.rate, crit: 0.1 + wpCrit, regen: wpRegen, col: sel.col, icon: st.icon };
+            bullets = []; eBullets = []; ens = []; gems = []; items = []; dmgTexts = []; zaps = []; boss = null;
+            sec = 0; lSec = performance.now(); lShot = 0; lSpw = 0; lZap = 0; nBoss = 30; orb = 0; zapLv = 0; iceLv = 0; novaOk = true; magnetTime = 0;
+            run = true; pause = false; userPause = false;
+            document.getElementById("bPause").innerText = "⏸️ Dừng";
+            document.getElementById("modal").style.display = "none";
+            document.getElementById("msg").innerText = "⚔️ Đang chiến đấu!";
+            cv.focus(); ui();
+        }
+
         function up(t) {
             if (t === 'dmg') p.dmg = Math.round(p.dmg * 1.3);
             if (t === 'spd') p.rate = Math.max(100, Math.round(p.rate * 0.75));
             if (t === 'orb') orb++;
+            if (t === 'zap') zapLv++;
+            if (t === 'ice') iceLv++;
+            if (t === 'crit') p.crit = Math.min(0.85, p.crit + 0.15);
             if (t === 'hp') p.hp = Math.min(p.mhp, p.hp + 40);
             pause = false; document.getElementById("modal").style.display = "none"; ui();
         }
+
+        function addDmgText(x, y, val, col="#fff", isCrit=false) {
+            dmgTexts.push({ x: x + (Math.random()*16 - 8), y: y - 10, txt: (isCrit ? "💥" : "") + Math.round(val), life: 25, col: col });
+        }
+        function hitEnemy(e, baseDmg) {
+            let isCrit = Math.random() < p.crit, finalDmg = isCrit ? baseDmg * 2.5 : baseDmg;
+            e.hp -= finalDmg; addDmgText(e.x, e.y, finalDmg, isCrit ? "#ff4d4d" : "#fde047", isCrit);
+        }
+        function hitBoss(baseDmg) {
+            if (!boss) return;
+            let isCrit = Math.random() < p.crit, finalDmg = isCrit ? baseDmg * 2.5 : baseDmg;
+            boss.hp -= finalDmg; addDmgText(boss.x, boss.y, finalDmg, isCrit ? "#ff4d4d" : "#f43f5e", isCrit);
+        }
+
         function ui() {
-            document.getElementById("tTxt").innerText = fmt(sec);
-            document.getElementById("bTxt").innerText = fmt(bestSec);
-            document.getElementById("kTxt").innerText = bossKills;
-            document.getElementById("hTxt").innerText = Math.max(0, Math.floor(p.hp));
-            document.getElementById("lTxt").innerText = p.lv;
-            document.getElementById("eTxt").innerText = `${p.exp}/${p.nexp}`;
+            document.getElementById("tTxt").innerText = fmt(sec); document.getElementById("bTxt").innerText = fmt(bestSec);
+            document.getElementById("kTxt").innerText = bossKills; document.getElementById("hTxt").innerText = Math.max(0, Math.floor(p.hp));
+            document.getElementById("lTxt").innerText = p.lv; document.getElementById("eTxt").innerText = `${p.exp}/${p.nexp}`;
             document.getElementById("cTxt").innerText = coins;
         }
-        function drawEmoji(ico, x, y, size) {
-            ctx.font = `${size}px Arial`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(ico, x, y);
-        }
+        function drawEmoji(ico, x, y, size) { ctx.font = `${size}px Arial`; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(ico, x, y); }
         function loop(ts) {
             ctx.clearRect(0, 0, cv.width, cv.height);
-            if (run && !pause) {
+            if (run && !pause && !userPause) {
                 if (ts - lSec >= 1000) {
                     lSec = ts; sec++;
-                    if (sec > bestSec) { bestSec = sec; save(); }
-                    ui();
+                    if (p.regen > 0) p.hp = Math.min(p.mhp, p.hp + p.regen);
+                    if (sec > bestSec) { bestSec = sec; save(); } ui();
                     if (sec >= nBoss && !boss) { let mh = 450 + sec * 18; boss = { x: 240, y: -30, r: 28, hp: mh, mhp: mh, spd: 1.0, icon: "👹" }; nBoss += 30; }
                 }
                 if ((keys["KeyW"] || keys["ArrowUp"]) && p.y > p.r) p.y -= p.spd;
@@ -147,9 +255,9 @@
                 if (ts - lSpw > 800) {
                     lSpw = ts; let s = Math.floor(Math.random()*4), tp = Math.random();
                     let ex = s===0?0:s===1?cv.width:Math.random()*cv.width, ey = s===2?0:s===3?cv.height:Math.random()*cv.height;
-                    if (tp < 0.25) ens.push({ x: ex, y: ey, r: 11, hp: 12 + sec*0.5, spd: 2.3, icon: "🦇" }); // Quái nhanh
-                    else if (tp < 0.45) ens.push({ x: ex, y: ey, r: 16, hp: 45 + sec*2, spd: 0.9, icon: "🗿" }); // Quái giáp trâu
-                    else ens.push({ x: ex, y: ey, r: 13, hp: 20 + sec, spd: 1.4, icon: "👾" }); // Quái thường
+                    if (tp < 0.25) ens.push({ x: ex, y: ey, r: 11, hp: 12 + sec*0.5, spd: 2.3, icon: "🦇" });
+                    else if (tp < 0.45) ens.push({ x: ex, y: ey, r: 16, hp: 45 + sec*2, spd: 0.9, icon: "🗿" });
+                    else ens.push({ x: ex, y: ey, r: 13, hp: 20 + sec, spd: 1.4, icon: "👾" });
                 }
                 let tg = boss ? [...ens, boss] : ens;
                 if (ts - lShot > p.rate && tg.length) {
@@ -157,6 +265,14 @@
                     let nr = tg.reduce((a, b) => Math.hypot(b.x-p.x, b.y-p.y) < Math.hypot(a.x-p.x, a.y-p.y) ? b : a);
                     let ang = Math.atan2(nr.y - p.y, nr.x - p.x);
                     bullets.push({ x: p.x, y: p.y, vx: Math.cos(ang)*6.5, vy: Math.sin(ang)*6.5 });
+                }
+                if (zapLv > 0 && ts - lZap > 1600 && tg.length) {
+                    lZap = ts;
+                    let targets = tg.slice(0, Math.min(tg.length, 1 + zapLv));
+                    targets.forEach(t => {
+                        zaps.push({ x1: p.x, y1: p.y, x2: t.x, y2: t.y, life: 10 });
+                        if (t === boss) hitBoss(p.dmg * (0.7 + zapLv * 0.2)); else hitEnemy(t, p.dmg * (0.7 + zapLv * 0.2));
+                    });
                 }
                 for (let i = bullets.length - 1; i >= 0; i--) {
                     bullets[i].x += bullets[i].vx; bullets[i].y += bullets[i].vy;
@@ -167,12 +283,18 @@
                     if (Math.hypot(p.x - eBullets[i].x, p.y - eBullets[i].y) < p.r + 5) { p.hp -= 12; eBullets.splice(i, 1); ui(); continue; }
                     if (eBullets[i].x < 0 || eBullets[i].x > cv.width || eBullets[i].y < 0 || eBullets[i].y > cv.height) eBullets.splice(i, 1);
                 }
+                let iceRad = iceLv > 0 ? 75 + iceLv * 20 : 0;
                 for (let i = ens.length - 1; i >= 0; i--) {
                     let e = ens[i], ang = Math.atan2(p.y - e.y, p.x - e.x);
-                    e.x += Math.cos(ang)*e.spd; e.y += Math.sin(ang)*e.spd;
+                    let slow = (iceLv > 0 && Math.hypot(p.x - e.x, p.y - e.y) < iceRad) ? 0.5 : 1;
+                    e.x += Math.cos(ang)*e.spd*slow; e.y += Math.sin(ang)*e.spd*slow;
                     if (Math.hypot(p.x - e.x, p.y - e.y) < p.r + e.r) { p.hp -= 0.4; ui(); }
-                    for (let j = bullets.length - 1; j >= 0; j--) if (Math.hypot(bullets[j].x - e.x, bullets[j].y - e.y) < e.r + 5) { e.hp -= p.dmg; bullets.splice(j, 1); break; }
-                    if (e.hp <= 0) { gems.push({ x: e.x, y: e.y, v: 2 }); ens.splice(i, 1); coins += 5; save(); ui(); }
+                    for (let j = bullets.length - 1; j >= 0; j--) if (Math.hypot(bullets[j].x - e.x, bullets[j].y - e.y) < e.r + 5) { hitEnemy(e, p.dmg); bullets.splice(j, 1); break; }
+                    if (e.hp <= 0) {
+                        gems.push({ x: e.x, y: e.y, v: 2 });
+                        if (Math.random() < 0.08) items.push({ x: e.x, y: e.y, type: Math.random() < 0.6 ? "meat" : "mag" });
+                        ens.splice(i, 1); coins += 5; ui();
+                    }
                 }
                 if (boss) {
                     let ang = Math.atan2(p.y - boss.y, p.x - boss.x); boss.x += Math.cos(ang)*boss.spd; boss.y += Math.sin(ang)*boss.spd;
@@ -181,12 +303,27 @@
                         for (let k = 0; k < 8; k++) { let a = k * (Math.PI / 4); eBullets.push({ x: boss.x, y: boss.y, vx: Math.cos(a)*3.2, vy: Math.sin(a)*3.2 }); }
                     }
                     if (Math.hypot(p.x - boss.x, p.y - boss.y) < p.r + boss.r) { p.hp -= 0.8; ui(); }
-                    for (let j = bullets.length - 1; j >= 0; j--) if (Math.hypot(bullets[j].x - boss.x, bullets[j].y - boss.y) < boss.r + 5) { boss.hp -= p.dmg; bullets.splice(j, 1); }
-                    if (boss.hp <= 0) { gems.push({ x: boss.x, y: boss.y, v: 15 }); coins += 100; bossKills++; save(); boss = null; ui(); }
+                    for (let j = bullets.length - 1; j >= 0; j--) if (Math.hypot(bullets[j].x - boss.x, bullets[j].y - boss.y) < boss.r + 5) { hitBoss(p.dmg); bullets.splice(j, 1); }
+                    if (boss.hp <= 0) {
+                        gems.push({ x: boss.x, y: boss.y, v: 15 });
+                        items.push({ x: boss.x + 15, y: boss.y, type: "chest" });
+                        coins += 100; bossKills++; save(); boss = null; ui();
+                    }
                 }
                 if (!novaOk && ts - lNova >= 5000) novaOk = true;
                 document.getElementById("skTxt").innerText = novaOk ? "OK" : "Chờ...";
+
+                for (let i = items.length - 1; i >= 0; i--) {
+                    if (Math.hypot(p.x - items[i].x, p.y - items[i].y) < p.r + 14) {
+                        if (items[i].type === "meat") p.hp = Math.min(p.mhp, p.hp + 25);
+                        else if (items[i].type === "mag") magnetTime = 180;
+                        else if (items[i].type === "chest") { p.dmg = Math.round(p.dmg * 1.2); p.hp = Math.min(p.mhp, p.hp + 50); addDmgText(p.x, p.y, 50, "#4ade80"); }
+                        items.splice(i, 1); ui();
+                    }
+                }
+                if (magnetTime > 0) magnetTime--;
                 for (let i = gems.length - 1; i >= 0; i--) {
+                    if (magnetTime > 0) { let a = Math.atan2(p.y - gems[i].y, p.x - gems[i].x); gems[i].x += Math.cos(a)*6; gems[i].y += Math.sin(a)*6; }
                     if (Math.hypot(p.x - gems[i].x, p.y - gems[i].y) < p.r + 14) {
                         p.exp += gems[i].v; gems.splice(i, 1);
                         if (p.exp >= p.nexp) { p.exp = 0; p.lv++; p.nexp = Math.round(p.nexp * 1.4); pause = true; document.getElementById("modal").style.display = "block"; }
@@ -195,14 +332,20 @@
                 }
                 if (p.hp <= 0) { run = false; save(); document.getElementById("msg").innerText = `💀 Đạt ${fmt(sec)}! Bấm Bắt Đầu chơi lại.`; }
             }
-            gems.forEach(g => { drawEmoji(g.v > 5 ? "🌟" : "💎", g.x, g.y, g.v > 5 ? 18 : 13); });
-            ens.forEach(e => { drawEmoji(e.icon, e.x, e.y, e.r * 2); });
+            if (run && iceLv > 0) { ctx.fillStyle = "rgba(6, 182, 212, 0.15)"; ctx.beginPath(); ctx.arc(p.x, p.y, 75 + iceLv * 20, 0, 6.28); ctx.fill(); }
+            gems.forEach(g => drawEmoji(g.v > 5 ? "🌟" : "💎", g.x, g.y, g.v > 5 ? 18 : 13));
+            items.forEach(it => drawEmoji(it.type === "meat" ? "🍖" : it.type === "mag" ? "🧲" : "🎁", it.x, it.y, 18));
+            ens.forEach(e => drawEmoji(e.icon, e.x, e.y, e.r * 2));
             if (boss) {
                 drawEmoji(boss.icon, boss.x, boss.y, boss.r * 2);
                 ctx.fillStyle = "#ef4444"; ctx.fillRect(boss.x - 30, boss.y - boss.r - 10, 60 * Math.max(0, boss.hp/boss.mhp), 6);
             }
             ctx.fillStyle = p.col; bullets.forEach(b => { ctx.beginPath(); ctx.arc(b.x, b.y, 5, 0, 6.28); ctx.fill(); });
             ctx.fillStyle = "#f43f5e"; eBullets.forEach(b => { ctx.beginPath(); ctx.arc(b.x, b.y, 5, 0, 6.28); ctx.fill(); });
+            for (let i = zaps.length - 1; i >= 0; i--) {
+                ctx.strokeStyle = "#facc15"; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(zaps[i].x1, zaps[i].y1); ctx.lineTo(zaps[i].x2, zaps[i].y2); ctx.stroke();
+                if (--zaps[i].life <= 0) zaps.splice(i, 1);
+            }
             if (run && orb > 0) {
                 orbA += 0.06;
                 for (let i = 0; i < orb; i++) {
@@ -213,6 +356,11 @@
                 }
             }
             drawEmoji(p.icon, p.x, p.y, p.r * 2);
+            for (let i = dmgTexts.length - 1; i >= 0; i--) {
+                let dt = dmgTexts[i]; dt.y -= 0.7; ctx.fillStyle = dt.col; ctx.font = "bold 12px sans-serif"; ctx.fillText(dt.txt, dt.x, dt.y);
+                if (--dt.life <= 0) dmgTexts.splice(i, 1);
+            }
+            if (userPause) { ctx.fillStyle = "rgba(0,0,0,0.5)"; ctx.fillRect(0, 0, cv.width, cv.height); ctx.fillStyle = "white"; ctx.font = "bold 24px sans-serif"; ctx.fillText("⏸️ ĐÃ TẠM DỪNG", cv.width/2, cv.height/2); }
             requestAnimationFrame(loop);
         }
         load(); drawInv(); requestAnimationFrame(loop);
